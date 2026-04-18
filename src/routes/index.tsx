@@ -34,8 +34,8 @@ function Home() {
     <button
       type="button"
       onClick={() => {
-        updateCount({ data: 1 }).then(() => {
-          router.invalidate()
+        void updateCount({ data: 1 }).then(() => {
+          void router.invalidate()
         })
       }}
     >

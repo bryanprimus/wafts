@@ -25,6 +25,7 @@
     "nano-staged": "^1.0.2",
     "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",
+    "oxlint-tsgolint": "^0.21.1",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.8"
@@ -34,6 +35,6 @@
   },
   "nano-staged": {
     "*": "bun run --bun fmt --no-error-on-unmatched-pattern",
-    "*.{js,jsx,ts,tsx,mjs,cjs}": "bun run --bun lint"
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "bun run --bun lint:fix"
   }
 }

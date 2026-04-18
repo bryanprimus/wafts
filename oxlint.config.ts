@@ -15,5 +15,9 @@ export default defineConfig({
     'react',
     'react-perf',
   ],
+  options: {
+    typeAware: true,
+    typeCheck: true,
+  },
   ignorePatterns: ['routeTree.gen.ts'],
 })
