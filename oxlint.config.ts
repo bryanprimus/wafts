@@ -2,7 +2,7 @@ import { defineConfig } from 'oxlint'
 
 export default defineConfig({
   categories: {
-    correctness: 'warn',
+    correctness: 'error',
   },
   plugins: [
     // default enabled built-in plugins https://oxc.rs/docs/guide/usage/linter/plugins.html#supported-plugins
