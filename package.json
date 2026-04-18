@@ -1,16 +1,11 @@
 {
   "name": "wafts",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build"
+    "build": "vite build",
+    "start": "vite preview"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@tanstack/react-router": "^1.168.22",
     "@tanstack/react-start": "^1.167.41",
