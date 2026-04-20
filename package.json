@@ -11,6 +11,7 @@
     "fmt:check": "oxfmt --check",
     "postinstall": "bunx --bun simple-git-hooks",
     "db:push": "bunx --bun drizzle-kit push",
+    "db:studio": "bunx --bun drizzle-kit studio",
     "auth:generate": "bun --bun x auth@latest generate --output ./src/db/auth-schema.ts"
   },
   "dependencies": {
