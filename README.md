@@ -24,10 +24,12 @@ bun i
 cp .env.example .env.local
 ```
 
+> **Note:** Open `.env.local` and customize `POSTGRES_DB`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, and `REDIS_PORT` to your project's needs. Ensure `DATABASE_URL` matches your chosen configuration before starting the database container.
+
 4. Start Docker Containers for Postgres and Redis
 
 ```bash
-docker compose up -d
+docker compose --env-file .env.local up -d
 ```
 
 5. Push Database Schema
