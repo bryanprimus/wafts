@@ -7,6 +7,9 @@
     "skipLibCheck": true,
     "strictNullChecks": true,
     "verbatimModuleSyntax": false,
-    "types": ["vite/client", "bun"]
+    "types": ["vite/client", "bun"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
