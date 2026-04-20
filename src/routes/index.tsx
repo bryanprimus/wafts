@@ -95,7 +95,7 @@ function Home() {
 
   return (
     <div>
-      <h2>Sign in</h2>
+      <h2 className="text-red-400">Sign in</h2>
       <form
         onSubmit={async (e) => {
           e.preventDefault()
