@@ -1,7 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { db } from '@/db'
+import { db, redis } from '@/db'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+import { redisStorage } from '@better-auth/redis-storage'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -10,7 +11,12 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  plugins: [
-    tanstackStartCookies(), // make sure this is the last plugin in the array
-  ],
+  plugins: [tanstackStartCookies()],
+  secondaryStorage: redisStorage({
+    client: redis,
+  }),
+  session: {
+    storeSessionInDatabase: true,
+    preserveSessionInDatabase: true,
+  },
 })

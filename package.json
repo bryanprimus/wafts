@@ -10,13 +10,16 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "postinstall": "bunx --bun simple-git-hooks",
-    "db:push": "bunx --bun drizzle-kit push"
+    "db:push": "bunx --bun drizzle-kit push",
+    "auth:generate": "bun --bun x auth@latest generate --output ./src/db/auth-schema.ts"
   },
   "dependencies": {
+    "@better-auth/redis-storage": "^1.6.5",
     "@tanstack/react-router": "^1.168.22",
     "@tanstack/react-start": "^1.167.41",
     "better-auth": "^1.6.5",
     "drizzle-orm": "^0.45.2",
+    "ioredis": "^5.10.1",
     "pg": "^8.20.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
