@@ -23,3 +23,7 @@ Run the Development Server
 ```bash
 bun dev
 ```
+
+## License
+
+[MIT](./LICENSE) © [bryanprimus](https://github.com/bryanprimus)
