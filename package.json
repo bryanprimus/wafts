@@ -9,19 +9,24 @@
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "postinstall": "bunx --bun simple-git-hooks"
+    "postinstall": "bunx --bun simple-git-hooks",
+    "db:push": "bunx --bun drizzle-kit push"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.168.22",
     "@tanstack/react-start": "^1.167.41",
+    "drizzle-orm": "^0.45.2",
+    "pg": "^8.20.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@types/bun": "^1.3.12",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "drizzle-kit": "^0.31.10",
     "nano-staged": "^1.0.2",
     "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",
