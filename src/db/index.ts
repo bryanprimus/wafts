@@ -4,7 +4,4 @@ import * as schema from '@/db/schema'
 
 export const db = drizzle(process.env.DATABASE_URL!, { schema })
 
-export const redis = new Redis({
-  host: process.env.REDIS_HOST!,
-  port: parseInt(process.env.REDIS_PORT!),
-})
+export const redis = new Redis(process.env.REDIS_URL!)
