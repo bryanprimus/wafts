@@ -45,8 +45,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: wafts_password
       POSTGRES_DB: wafts
+      PGDATA: /var/lib/postgresql/data
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
 
   redis:
     image: redis:8.6.2-alpine
@@ -70,13 +71,25 @@ If you prefer not to create a `compose.yaml` file, you can start the containers 
 for postgres:
 
 ```bash
-docker run -d --name wafts-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=wafts_password -e POSTGRES_DB=wafts -p 5432:5432 -v pgdata:/var/lib/postgresql/data postgres:18.3-alpine3.23
+docker run -d --name wafts-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=wafts_password -e POSTGRES_DB=wafts -e PGDATA=/var/lib/postgresql/data -p 5432:5432 -v pgdata:/var/lib/postgresql postgres:18.3-alpine3.23
 ```
 
 and then for redis:
 
 ```bash
 docker run -d --name wafts-redis -p 6379:6379 redis:8.6.2-alpine
+```
+
+To stop and remove these containers later:
+
+```bash
+docker rm -f wafts-postgres wafts-redis
+```
+
+If you also want to completely wipe the Postgres database data, remove the volume:
+
+```bash
+docker volume rm pgdata
 ```
 
 > **Note for both options:**
