@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react'
 import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
+import { THEME_INIT_SCRIPT, ThemeProvider } from 'tanstack-start-themes'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -32,12 +33,13 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html>
+    <html suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
         <Scripts />
       </body>
     </html>
