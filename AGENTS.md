@@ -19,7 +19,7 @@ Within a domain:
 - `client.ts` is for the public client-side domain API, including TanStack Query `queryOptions` and mutation hooks. Best practice follows: https://tkdodo.eu/blog/the-query-options-api, https://tkdodo.eu/blog/creating-query-abstractions, https://tkdodo.eu/blog/mastering-mutations-in-react-query
 - `schema.ts` is for domain-owned Drizzle schema.
 
-Do not create new generic other than listed above. If a domain has integration-specific setup that does not fit the shared baseline, name it explicitly for that domain or integration. For example, auth uses `auth-server.ts` for `betterAuth(...)` and `auth-client.ts` for `createAuthClient(...)`.
+Do not create new generic folders other than those listed above. If a domain has integration-specific setup that does not fit the shared baseline, name it explicitly for that domain or integration. For example, auth uses `auth-server.ts` for `betterAuth(...)` and `auth-client.ts` for `createAuthClient(...)`.
 
 ## Use namespace imports for Zod
 
