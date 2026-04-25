@@ -4,6 +4,10 @@ Refer to this [1st](https://github.com/bryanprimus/wafts/tree/27331f70ea8468ce2c
 
 Note that we will be using [Bun](https://bun.com/) throughout this repo. So kindly [Install Bun](https://bun.com/docs/installation) if you haven't. PostgreSQL and Redis are also required, and you can run them using your preferred method (local, Docker, or managed service).
 
+## Project Conventions
+
+This repo includes an [AGENTS.md](./AGENTS.md) file for coding agents that documents project conventions, including repo structure, import style, and form submission patterns. Until we have proper human facing docs, you can refer to that file first before making code changes or contributing.
+
 ## Getting Started
 
 1. Clone this repo

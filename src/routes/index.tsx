@@ -1,104 +1,39 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { noop, queryOptions, useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { noop, useSuspenseQuery } from '@tanstack/react-query'
 import { useForm } from '@tanstack/react-form'
-import { getSession } from '@/lib/auth.functions'
-import { Button } from '@/components/ui/button'
-import { authClient } from '@/lib/auth-client'
-import * as z from 'zod'
+import { Button } from '@/design-system/ui/button'
 import { useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-
-const sessionQueryOptions = () =>
-  queryOptions({
-    queryKey: ['session'],
-    queryFn: async () => {
-      const session = await getSession()
-      return session
-    },
-  })
+import { Input } from '@/design-system/ui/input'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/design-system/ui/field'
+import {
+  authQueries,
+  signInSchema,
+  signUpSchema,
+  useSignInMutation,
+  useSignOutMutation,
+  useSignUpMutation,
+} from '@/auth/client'
 
 export const Route = createFileRoute('/')({
   component: Home,
   loader: {
-    handler: ({ context }) => context.queryClient.fetchQuery(sessionQueryOptions()),
+    // Use fetchQuery instead of ensureQueryData to prevent showing cached data
+    handler: ({ context }) => context.queryClient.fetchQuery(authQueries.session()),
     staleReloadMode: 'blocking',
   },
 })
 
 type View = 'signin' | 'signup'
 
-const signInSchema = z.object({
-  email: z.email('Enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-})
-
-const signUpSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.email('Enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-})
-
 function Home() {
-  const sessionQuery = useSuspenseQuery(sessionQueryOptions())
+  const sessionQuery = useSuspenseQuery(authQueries.session())
   const sessionData = sessionQuery.data
 
   const [view, setView] = useState<View>('signin')
 
-  const signInMutation = useMutation({
-    mutationFn: async (value: z.infer<typeof signInSchema>) => {
-      const { error } = await authClient.signIn.email({
-        email: value.email.trim(),
-        password: value.password,
-      })
-
-      if (error) {
-        throw new Error(error.message || 'Sign in failed')
-      }
-    },
-    onError: (err) => {
-      console.error('Oops!', { description: err.message })
-    },
-    onSuccess: () => {
-      void sessionQuery.refetch()
-    },
-  })
-
-  const signUpMutation = useMutation({
-    mutationFn: async (value: z.infer<typeof signUpSchema>) => {
-      const { error } = await authClient.signUp.email({
-        name: value.name.trim(),
-        email: value.email.trim(),
-        password: value.password,
-      })
-
-      if (error) {
-        throw new Error(error.message || 'Sign up failed')
-      }
-    },
-    onError: (err) => {
-      console.error('Oops!', { description: err.message })
-    },
-    onSuccess: () => {
-      void sessionQuery.refetch()
-    },
-  })
-
-  const signOutMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await authClient.signOut()
-
-      if (error) {
-        throw new Error(error.message || 'Sign out failed')
-      }
-    },
-    onError: (err) => {
-      console.error('Oops!', { description: err.message })
-    },
-    onSuccess: () => {
-      void sessionQuery.refetch()
-    },
-  })
+  const signInMutation = useSignInMutation()
+  const signUpMutation = useSignUpMutation()
+  const signOutMutation = useSignOutMutation()
 
   const signInForm = useForm({
     defaultValues: {
