@@ -9,6 +9,9 @@ export const authQueries = {
     queryOptions({
       queryKey: [...authQueries.all(), 'session'] as const,
       queryFn: getSession,
+      meta: {
+        errorToast: 'Could not refresh your session',
+      },
     }),
 }
 
@@ -62,6 +65,9 @@ export function useSignInMutation() {
 
   return useMutation({
     mutationFn: signIn,
+    meta: {
+      errorToast: false,
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: authQueries.session().queryKey,
@@ -75,6 +81,9 @@ export function useSignUpMutation() {
 
   return useMutation({
     mutationFn: signUp,
+    meta: {
+      errorToast: false,
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: authQueries.session().queryKey,
@@ -88,6 +97,9 @@ export function useSignOutMutation() {
 
   return useMutation({
     mutationFn: signOut,
+    meta: {
+      errorToast: 'Could not sign out',
+    },
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: authQueries.session().queryKey,

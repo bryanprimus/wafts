@@ -4,6 +4,7 @@ import { Outlet, HeadContent, Scripts, createRootRouteWithContext } from '@tanst
 import appCss from '../styles.css?url'
 import { THEME_INIT_SCRIPT, ThemeProvider } from 'tanstack-start-themes'
 import type { QueryClient } from '@tanstack/react-query'
+import { Toaster } from '@/design-system/ui/sonner'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -42,7 +43,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider enableHotkey>
+          {children}
+          <Toaster richColors />
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>
