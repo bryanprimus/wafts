@@ -11,15 +11,16 @@ Use domain folders for app code:
 - `src/design-system` owns shadcn/ui components, design-system hooks, and design-system utilities.
 - `src/db` owns database infrastructure and schema aggregation only. Use `postgres.ts` for the Drizzle Postgres client, `redis.ts` for the Redis client, and `schema.ts` to aggregate domain schemas.
 - `src/auth` owns auth setup, auth schema, auth server functions, and auth client/query APIs.
+- `src/errors` owns app-wide error taxonomy, TanStack Query error metadata, global query/mutation error side effects, and reusable route error UI.
 - Future features should use folders like `src/posts`, with colocated schema, server functions, query options, mutation hooks, and UI.
 
-Within a domain:
+Within app feature domains, use these baseline files when they match the responsibility:
 
 - `functions.ts` is for TanStack Start server functions.
 - `client.ts` is for the public client-side domain API, including TanStack Query `queryOptions` and mutation hooks. Best practice follows: https://tkdodo.eu/blog/the-query-options-api, https://tkdodo.eu/blog/creating-query-abstractions, https://tkdodo.eu/blog/mastering-mutations-in-react-query
 - `schema.ts` is for domain-owned Drizzle schema.
 
-Do not create new generic folders other than those listed above. If a domain has integration-specific setup that does not fit the shared baseline, name it explicitly for that domain or integration. For example, auth uses `auth-server.ts` for `betterAuth(...)` and `auth-client.ts` for `createAuthClient(...)`.
+Do not introduce alternative generic baseline filenames for app feature domains when `functions.ts`, `client.ts`, or `schema.ts` fits. Additional domain files are fine when they point to a specific domain or integration responsibility. For example, auth uses `auth-server.ts` for `betterAuth(...)` and `auth-client.ts` for `createAuthClient(...)`.
 
 ## Use namespace imports for Zod
 
@@ -44,3 +45,17 @@ const signUpForm = useForm({
   },
 })
 ```
+
+## Handle TanStack Query errors intentionally
+
+Centralize Query and Mutation error side effects in `src/errors`. Do not put toast side effects in reusable domain query APIs or route components by default.
+
+Keep `QueryClient` construction and non-error Query configuration in `src/router.tsx`, where app-level router/query wiring lives. `src/errors` may provide `QueryCache` and `MutationCache` factories for global error side effects, but it should not own unrelated QueryClient defaults.
+
+Domain `client.ts` files should mark error behavior with TanStack Query `meta`:
+
+- Use `meta: { errorToast: false }` for expected errors that are handled locally, especially form mutations like sign in or sign up.
+- Use `meta: { errorToast: 'Human readable message' }` when a background query or mutation failure should show a global toast.
+- Omit `errorToast` only when the shared fallback message is acceptable.
+
+Blocking route data failures should flow through TanStack Router loaders and route/default `errorComponent`s. Background query failures should keep stale UI visible and may show one global toast only when cached data already exists. Redirects, not-found control flow, and server-rendered execution must not trigger browser toasts.

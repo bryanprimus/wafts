@@ -28,12 +28,15 @@ type View = 'signin' | 'signup'
 function Home() {
   const sessionQuery = useSuspenseQuery(authQueries.session())
   const sessionData = sessionQuery.data
+  const sessionUser = sessionData?.user
 
   const [view, setView] = useState<View>('signin')
 
   const signInMutation = useSignInMutation()
   const signUpMutation = useSignUpMutation()
   const signOutMutation = useSignOutMutation()
+  const signInError = signInMutation.error
+  const signUpError = signUpMutation.error
 
   const signInForm = useForm({
     defaultValues: {
@@ -62,15 +65,15 @@ function Home() {
     },
   })
 
-  if (sessionData) {
+  if (sessionUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-sm flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Signed in</h2>
           <div className="flex flex-col gap-1">
-            <p>Name: {sessionData.user.name}</p>
-            <p>Email: {sessionData.user.email}</p>
-            <p>ID: {sessionData.user.id}</p>
+            <p>Name: {sessionUser?.name}</p>
+            <p>Email: {sessionUser?.email}</p>
+            <p>ID: {sessionUser?.id}</p>
           </div>
           <Button
             type="button"
@@ -99,9 +102,7 @@ function Home() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-sm flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Sign up</h2>
-          {signUpMutation.error && (
-            <p className="text-sm text-destructive">{signUpMutation.error?.message}</p>
-          )}
+          {signUpError && <p className="text-sm text-destructive">{signUpError?.message}</p>}
           <form
             className="flex flex-col gap-4"
             onSubmit={async (e) => {
@@ -202,9 +203,7 @@ function Home() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-sm flex flex-col gap-6">
         <h2 className="text-xl font-semibold">Sign in</h2>
-        {signInMutation.error && (
-          <p className="text-sm text-destructive">{signInMutation.error.message}</p>
-        )}
+        {signInError && <p className="text-sm text-destructive">{signInError?.message}</p>}
         <form
           className="flex flex-col gap-4"
           onSubmit={async (e) => {
