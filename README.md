@@ -1,8 +1,48 @@
-This repository follows the [TanStack Start - Build from Scratch](https://tanstack.com/start/latest/docs/framework/react/build-from-scratch) guide.
+# Wafts (Web app from the start)
+
+Wafts is a Bun first TanStack Start template for building authenticated full-stack React apps with a vertical codebase structure.
+
+This repository follows the [TanStack Start - Build from Scratch](https://tanstack.com/start/latest/docs/framework/react/build-from-scratch) guide for initialization.
 
 Refer to this [1st](https://github.com/bryanprimus/wafts/tree/27331f70ea8468ce2c2d89ccf728dd5779de7da4) commit for the exact code based on that guide.
 
 Note that we will be using [Bun](https://bun.com/) throughout this repo. So kindly [Install Bun](https://bun.com/docs/installation) if you haven't. PostgreSQL and Redis are also required, and you can run them using your preferred method (local, Docker, or managed service).
+
+## What's Included
+
+- [TanStack Start](https://tanstack.com/start/latest) with React 19 and a Bun first development workflow.
+- [Better Auth](https://www.better-auth.com/) setup for authentication.
+- Drizzle ORM with PostgreSQL.
+- Redis via `ioredis`.
+- An example authenticated app flow and feature domain that you can adapt or replace.
+- shadcn/ui-style design-system primitives in `src/design-system`.
+- Tailwind CSS v4, animation utilities, theme initialization, and toast support.
+- Reusable route error UI in `src/errors`.
+- Bun based scripts, Oxlint, Oxfmt, Simple Git Hooks, and Nano Staged for local formatting and linting.
+
+## Project Structure
+
+```txt
+src/
+  auth/            Better Auth server/client setup, auth schema, and auth server functions
+  db/              Drizzle Postgres client, Redis client, and schema aggregation
+  design-system/   shadcn/ui components, design-system utilities, and UI primitives
+  errors/          reusable app error helpers and route error UI
+  posts/           example feature domain with schema, client validation, and server functions
+  routes/          TanStack Router/Start route files and Better Auth API catch-all route
+  router.tsx       router factory and default route error/not-found components
+  styles.css       Tailwind, shadcn theme tokens, fonts, and global styles
+```
+
+## Available Scripts
+
+- `bun dev` starts the Vite/TanStack Start dev server on port 3000.
+- `bun run build` creates a production build.
+- `bun run start` previews the built app with Vite.
+- `bun run db:push` pushes the Drizzle schema to PostgreSQL.
+- `bun run db:studio` opens Drizzle Studio.
+- `bun run auth:generate` regenerates the Better Auth schema into `src/auth/schema.ts`.
+- `bun run lint` and `bun run fmt:check` check code quality and formatting.
 
 ## Project Conventions
 

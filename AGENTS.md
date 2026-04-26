@@ -14,6 +14,7 @@ Use domain folders for app code:
 - `src/db` owns database infrastructure and schema aggregation only. Use `postgres.ts` for the Drizzle Postgres client, `redis.ts` for the Redis client, and `schema.ts` to aggregate domain schemas.
 - `src/auth` owns auth setup, auth schema, auth server functions, and auth client APIs.
 - `src/errors` owns app-wide error taxonomy and reusable route error UI.
+- `src/observability` owns logging, metrics, request middleware, health checks, and external error reporting when those concerns are introduced.
 - Future features should use folders like `src/posts`, with colocated schema, server functions, client APIs, and UI.
 
 Within app feature domains, use these baseline files when they match the responsibility:
@@ -37,3 +38,23 @@ Use TanStack Router loaders for route-owned server data. Loaders should call Tan
 After a client-side action changes route-owned data, call `router.invalidate()` so the affected loaders reload. Expected form errors should be handled locally by the submitting route or component.
 
 Blocking route data failures should flow through TanStack Router loaders and route/default `errorComponent`s. Redirects and not-found control flow should remain router control flow.
+
+## Classify errors by handling surface
+
+Follow TanStack Start's observability and route error-boundary model. Observe failures close to where they happen, then let TanStack Router control flow route the user to the right UI. https://tanstack.com/start/latest/docs/framework/react/guide/observability
+
+Keep reusable error taxonomy and route error UI in `src/errors`. If logging, metrics, request middleware, health checks, or external reporting are added, put that cross-cutting code in `src/observability`; feature domains should call app-owned helpers instead of importing vendor SDKs directly.
+
+Treat expected user and domain failures differently from unexpected system failures:
+
+- Expected form and field validation errors belong in domain `client.ts` schemas and local form UI. Do not throw them to route error boundaries or report them as exceptions.
+- Route auth guards belong in `beforeLoad`; throw `redirect(...)` for navigation decisions instead of throwing generic unauthorized errors.
+- Server functions called by user actions should let the submitting component catch expected domain errors and show inline or toast feedback. After a successful mutation of route-owned data, call `router.invalidate()`.
+- Missing route-owned resources should throw `notFound()` from the loader or from the server function called by the loader. Render a route or global `notFoundComponent`; do not treat normal absence as an unexpected exception.
+- Blocking loader failures such as database, cache, or upstream outages should bubble to the route/default `errorComponent`. Loader-error UI should retry with `router.invalidate()`, which reloads the loader and resets the boundary. Use `reset()` for render-only boundary retries. Do not replace failed required data with fake empty data.
+- Server routes and API handlers should convert expected conditions into explicit `Response` statuses. Unexpected exceptions should be logged or reported once, then returned as sanitized 5xx responses.
+- Client render/runtime failures should use route/default `errorComponent`s for screen-level recovery. Show stack traces and component stacks only in development.
+
+When adding observability, prefer request middleware for request method, path, status, and duration. Instrument server functions with stable operation names, duration, and safe context such as route id or user id when useful. Use structured JSON logs in production and human-readable logs in development. Never log secrets, passwords, session tokens, full cookies, raw `Authorization` headers, or sensitive form bodies.
+
+If an external provider such as Sentry is introduced, initialize it behind `src/observability` helpers. Capture unexpected exceptions once per failure path, then rethrow the original error so Router boundaries, redirects, and `notFound()` continue to work normally. Do not capture redirects or not-found control flow as errors.
