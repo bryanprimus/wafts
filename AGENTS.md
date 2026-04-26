@@ -25,6 +25,10 @@ Within app feature domains, use these baseline files when they match the respons
 
 Do not introduce alternative generic baseline filenames for app feature domains when `functions.ts`, `client.ts`, or `schema.ts` fits. Additional domain files are fine when they point to a specific domain or integration responsibility. For example, auth uses `auth-server.ts` for `betterAuth(...)` and `auth-client.ts` for `createAuthClient(...)`.
 
+## Avoid premature abstractions
+
+Keep code inline and local by default. Do not create shared components, helpers, or abstraction layers unless they remove meaningful complexity, match an existing repeated pattern, or are explicitly requested.
+
 ## Use namespace imports for Zod
 
 Use `import * as z from 'zod'` for Zod imports.
