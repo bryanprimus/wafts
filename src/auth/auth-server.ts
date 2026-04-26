@@ -8,6 +8,7 @@ import { redis } from '@/db/redis'
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
+    usePlural: true,
   }),
   emailAndPassword: {
     enabled: true,
