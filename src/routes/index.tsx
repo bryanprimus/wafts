@@ -1,24 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { noop, useSuspenseQuery } from '@tanstack/react-query'
+import { useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { Button } from '@/design-system/ui/button'
 import { useState } from 'react'
 import { Input } from '@/design-system/ui/input'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/design-system/ui/field'
-import {
-  authQueries,
-  signInSchema,
-  signUpSchema,
-  useSignInMutation,
-  useSignOutMutation,
-  useSignUpMutation,
-} from '@/auth/client'
+import { getSession } from '@/auth/functions'
+import { signIn, signInSchema, signOut, signUp, signUpSchema } from '@/auth/client'
+import { getErrorMessage } from '@/errors/client'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
   loader: {
-    // Use fetchQuery instead of ensureQueryData to prevent showing cached data
-    handler: ({ context }) => context.queryClient.fetchQuery(authQueries.session()),
+    handler: () => getSession(),
     staleReloadMode: 'blocking',
   },
 })
@@ -26,17 +20,14 @@ export const Route = createFileRoute('/')({
 type View = 'signin' | 'signup'
 
 function RouteComponent() {
-  const sessionQuery = useSuspenseQuery(authQueries.session())
-  const sessionData = sessionQuery.data
+  const router = useRouter()
+  const sessionData = Route.useLoaderData()
   const sessionUser = sessionData?.user
 
   const [view, setView] = useState<View>('signin')
-
-  const signInMutation = useSignInMutation()
-  const signUpMutation = useSignUpMutation()
-  const signOutMutation = useSignOutMutation()
-  const signInError = signInMutation.error
-  const signUpError = signUpMutation.error
+  const [signInError, setSignInError] = useState<string | null>(null)
+  const [signUpError, setSignUpError] = useState<string | null>(null)
+  const [signOutError, setSignOutError] = useState<string | null>(null)
 
   const signInForm = useForm({
     defaultValues: {
@@ -47,7 +38,14 @@ function RouteComponent() {
       onChange: signInSchema,
     },
     onSubmit: async ({ value }) => {
-      await signInMutation.mutateAsync(value).catch(noop)
+      setSignInError(null)
+
+      try {
+        await signIn(value)
+        await router.invalidate()
+      } catch (error) {
+        setSignInError(getErrorMessage(error))
+      }
     },
   })
 
@@ -61,7 +59,14 @@ function RouteComponent() {
       onChange: signUpSchema,
     },
     onSubmit: async ({ value }) => {
-      await signUpMutation.mutateAsync(value).catch(noop)
+      setSignUpError(null)
+
+      try {
+        await signUp(value)
+        await router.invalidate()
+      } catch (error) {
+        setSignUpError(getErrorMessage(error))
+      }
     },
   })
 
@@ -79,11 +84,19 @@ function RouteComponent() {
             type="button"
             variant="outline"
             onClick={async () => {
-              signOutMutation.mutate()
+              setSignOutError(null)
+
+              try {
+                await signOut()
+                await router.invalidate()
+              } catch (error) {
+                setSignOutError(getErrorMessage(error))
+              }
             }}
           >
             Sign out
           </Button>
+          {signOutError && <p className="text-sm text-destructive">{signOutError}</p>}
         </div>
       </div>
     )
@@ -93,8 +106,8 @@ function RouteComponent() {
     setView(v)
     signInForm.reset()
     signUpForm.reset()
-    signInMutation.reset()
-    signUpMutation.reset()
+    setSignInError(null)
+    setSignUpError(null)
   }
 
   if (view === 'signup') {
@@ -102,7 +115,7 @@ function RouteComponent() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-sm flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Sign up</h2>
-          {signUpError && <p className="text-sm text-destructive">{signUpError?.message}</p>}
+          {signUpError && <p className="text-sm text-destructive">{signUpError}</p>}
           <form
             className="flex flex-col gap-4"
             onSubmit={async (e) => {
@@ -203,7 +216,7 @@ function RouteComponent() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-sm flex flex-col gap-6">
         <h2 className="text-xl font-semibold">Sign in</h2>
-        {signInError && <p className="text-sm text-destructive">{signInError?.message}</p>}
+        {signInError && <p className="text-sm text-destructive">{signInError}</p>}
         <form
           className="flex flex-col gap-4"
           onSubmit={async (e) => {
