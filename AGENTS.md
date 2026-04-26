@@ -31,6 +31,12 @@ Use `import * as z from 'zod'` for Zod imports.
 
 `import z from 'zod'`, `import { z } from 'zod'`, and `import * as z from 'zod'` are effectively equivalent for current Zod usage and do not have a meaningful performance difference. Prefer the namespace import to keep the codebase consistent and avoid mixed import styles.
 
+## Use validated environment variables
+
+Keep environment validation in `src/env.ts` using `@t3-oss/env-core`. Add new runtime variables to that schema first, then import `env` from `@/env` in app code instead of reading `process.env` directly.
+
+Server-only variables belong in the `server` schema. Browser-exposed variables must use the `VITE_` prefix and belong in the `client` schema. Keep `.env.example` and the README environment setup in sync with `src/env.ts`.
+
 ## Prefer route loaders for server data
 
 Use TanStack Router loaders for route-owned server data. Loaders should call TanStack Start server functions rather than accessing private server resources directly, because loaders can run on both the server and the client.

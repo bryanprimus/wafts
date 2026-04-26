@@ -30,6 +30,7 @@ src/
   errors/          reusable app error helpers and route error UI
   posts/           example feature domain with schema, client validation, and server functions
   routes/          TanStack Router/Start route files and Better Auth API catch-all route
+  env.ts           validated runtime environment schema
   router.tsx       router factory and default route error/not-found components
   styles.css       Tailwind, shadcn theme tokens, fonts, and global styles
 ```
@@ -69,6 +70,9 @@ cp .env.example .env.local
 ```
 
 > **Note:** Open `.env.local` and configure your `DATABASE_URL` and `REDIS_URL`. This template assumes you have PostgreSQL and Redis running locally or hosted elsewhere.
+> Also replace `BETTER_AUTH_SECRET` with a unique secret of at least 32 characters and keep `BETTER_AUTH_URL` aligned with the app URL, such as `http://localhost:3000` in development.
+>
+> Runtime environment variables are validated in `src/env.ts`. Add new variables there and keep `.env.example` updated when the app needs more configuration.
 
 <details>
 <summary><b>Optional: Quick Setup with Docker</b></summary>
