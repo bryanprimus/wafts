@@ -15,7 +15,7 @@ import {
 } from '@/auth/client'
 
 export const Route = createFileRoute('/')({
-  component: Home,
+  component: RouteComponent,
   loader: {
     // Use fetchQuery instead of ensureQueryData to prevent showing cached data
     handler: ({ context }) => context.queryClient.fetchQuery(authQueries.session()),
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/')({
 
 type View = 'signin' | 'signup'
 
-function Home() {
+function RouteComponent() {
   const sessionQuery = useSuspenseQuery(authQueries.session())
   const sessionData = sessionQuery.data
   const sessionUser = sessionData?.user
