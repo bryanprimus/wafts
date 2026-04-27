@@ -29,11 +29,17 @@ Do not introduce alternative generic baseline filenames for app feature domains 
 
 Keep code inline and local by default. Do not create shared components, helpers, or abstraction layers unless they remove meaningful complexity, match an existing repeated pattern, or are explicitly requested.
 
-## Use namespace imports for Zod
+## Zod usage
 
 Use `import * as z from 'zod'` for Zod imports.
 
 `import z from 'zod'`, `import { z } from 'zod'`, and `import * as z from 'zod'` are effectively equivalent for current Zod usage and do not have a meaningful performance difference. Prefer the namespace import to keep the codebase consistent and avoid mixed import styles.
+
+Prefer `z.email()` and `z.url()` directly over `z.string().email()` and `z.string().url()`. The latter are deprecated as of `zod v4` which what is used in this project.
+
+## Typescript usage
+
+never use interfaces. Use `type` for all type declarations, including object shapes. This keeps the codebase consistent and avoids confusion about when to use `interface` vs `type`. ignore generated files such as `src/routeTree.gen.ts`.
 
 ## Use validated environment variables
 
