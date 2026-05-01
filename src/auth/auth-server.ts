@@ -9,6 +9,11 @@ import { env } from '@/env'
 export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
+  rateLimit: {
+    // Disable this in development if needed.
+    enabled: true,
+    storage: 'secondary-storage',
+  },
   database: drizzleAdapter(db, {
     provider: 'pg',
     usePlural: true,
